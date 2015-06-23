@@ -10,11 +10,15 @@ body{
     margin: 0;
     padding: 0;
 }
-
+body{
+    font-size: 14px;
+    font-family: "Microsoft Yahei","SimSun","STXihei","Droid Sans Fallback";
+    color: #222;
+    background-color: #eee;
+}
 
 a{ text-decoration: none;}
-
-
+img{border:none;}
 
 
 
