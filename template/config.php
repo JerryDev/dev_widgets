@@ -1,10 +1,10 @@
 <?php
 
 return array(
-    'driver'    => 'mysql',
+    'driver'    => 'mysqli',
     'host'      => '127.0.0.1:3306',
     'username'  => 'root',
     'password'  => '',
-    'database'  => 'database',
+    'database'  => '',
     'charset'   => 'utf8',
 );

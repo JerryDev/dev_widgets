@@ -35,6 +35,19 @@ date_default_timezone_set('Asia/Shanghai');
 define('START_TIME', microtime(true));
 
 
+// php 版本判断
+
+
+
+
+
+
+
+
+
+
+
+
 
 // 配置数据库
 $cfg = array(
@@ -45,4 +58,31 @@ $cfg = array(
     'database'  => 'database',
     'charset'   => 'utf8',
 );
+
+
+$mysqli -> new mysqli($cfg['host'], $cfg['username'], $cfg['password']);
+
+if($mysqli -> connect_errno){
+    exit('connect error: ', $mysqli -> connect_error);
+}
+
+$sql = 'select * from `table_name` order by `id` ASC';
+
+$data = array();
+
+if($result = $mysqli -> query($sql)){
+    while ($line = $result -> fetch_assoc()) {
+        $data[] = $line;
+        // ...
+    }
+}
+
+
+
+
+
+
+
+
+
 
