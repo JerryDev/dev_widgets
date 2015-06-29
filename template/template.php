@@ -34,6 +34,7 @@ date_default_timezone_set('Asia/Shanghai');
 // 定义页面开始执行时间，方便计算页面执行时间
 define('START_TIME', microtime(true));
 
+define(_WEBROOT_, str_replace('\\', '/', dirname(__FILE__)));
 
 // php 版本判断
 
