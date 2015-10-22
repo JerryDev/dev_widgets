@@ -1,0 +1,21 @@
+{
+	"bold_folder_labels": true,  // 加粗侧栏上端显示打开的文件
+	"default_line_ending": "unix",  // 1 默认的换行符unix类型
+	"ensure_newline_at_eof_on_save": "true",  // 2 在保存的时候，确保在结尾有一个新行
+	"font_size": 14,  // 3 字体大小
+	//"font_face": "Consolas",  // 4 字体
+	"highlight_line": true,  // 5 高亮显示当前行
+	"highlight_modified_tabs": true,  // 6 突出显示修改过的标签
+	"ignored_packages":
+	[
+		"Vintage"
+	],
+	"save_on_focus_lost": true,  // 7 在失去焦点的时候保存文件
+	"show_encoding": true,  // 8 显示文件编码
+	"show_line_endings": true, // 9 在状态栏显示行结束符
+	"tab_size": 4,  // 10 tab键为4个字符宽度
+	"translate_tabs_to_spaces": true, // 11 把所有的tab转换成空格
+	"trim_trailing_white_space_on_save":true,  // 12 在保存的时候，删除尾部的空白字符
+	"update_check": false, // 13 不检查新版本
+	"word_wrap": true, // 14 文本换行
+}
