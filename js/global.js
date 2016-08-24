@@ -36,6 +36,74 @@ Array.prototype.has = function(val) {
 }
 
 
+/*
+ * 复制一份对象
+ *
+ */
+Object.prototype.clone = function(){
+    var objClone;
+    if ( this.constructor == Object ) objClone = new this.constructor(); 
+    else objClone = new this.constructor(this.valueOf()); 
+    for ( var key in this ) {
+        if ( objClone[key] != this[key] ) {
+            if ( typeof(this[key]) == 'object' ) {
+                objClone[key] = this[key].clone();
+            } else {
+                objClone[key] = this[key];
+            }
+        }
+    }
+    objClone.toString = this.toString;
+    objClone.valueOf = this.valueOf;
+    return objClone;
+}
+
+
+/*
+ * 获得url参数值
+ * @datetime 2016-08-24 17:08
+ */
+function GetQuery(key) {
+    var url = window.document.location.href.toString();
+    var urls = url.split("?");
+    if (typeof urls[1] == "string" && urls[1].length > 0){
+        var qArr = urls[1].split("&");
+        var get = {};
+        for (var i=0; i < qArr.length; i++) {
+            var kv = qArr[i].split('=');
+            get[kv[0]] = kv[1];
+        }
+        if (get[key]) {
+            return get[key];
+        } else {
+            return undefined;
+        }
+        // return get;
+    } else {
+        return undefined;
+    }
+}
+
+/*
+ * 模拟PHP的$_GET超全局变量
+ */
+var $_GET = (function(){
+    var url = window.document.location.href.toString();
+    var urls = url.split("?");
+    if (typeof urls[1] == "string" && urls[1].length > 0){
+        var qArr = urls[1].split("&");
+        var get = {};
+        for (var i=0; i < qArr.length; i++) {
+            var kv = qArr[i].split('=');
+            get[kv[0]] = kv[1];
+        }
+        return get;
+    } else {
+        return {};
+    }
+})();
+
+
 /**
  * 格式化日期
  * @author guozhenyi
@@ -86,10 +154,77 @@ if(!("nextElementSibling" in document.documentElement)){
 }
 
 
+/*
+ * 解决websocket在onopen里执行send失败的问题
+ * 一般会报错：
+ * Uncaught InvalidStateError: Failed to execute 'send' on 'WebSocket': Still in CONNECTING state.
+ *
+ * @datetime 2016-08-24 17:12
+ */
+WebSocket.prototype.waitForConnection = function (callback, interval) {
+    if (this.readyState === 1) {
+        callback();
+    } else {
+        var that = this;
+        setTimeout(function () {
+            that.waitForConnection(callback, interval);
+        }, interval);
+    }
+};
+WebSocket.prototype.safeSend = function (message, callback) {
+    var that = this;
+    that.waitForConnection(function () {
+        that.send(message);
+        if (typeof callback !== 'undefined') {
+          callback();
+        }
+    }, 1000);
+};
 
 
 
 
+/*
+ * websocket 连接实例
+ *
+ * @datetime 2016-08-24 18:12
+ */
+
+var ws;
+var payload = {
+    'type':'login',
+    'uid': '1',
+    'rid': '1'
+}
+try {
+    ws = new WebSocket('ws://127.0.0.1:6666');
+} catch (e) {
+    console.log(e);
+    // throw exception('websocket connect error');
+}
+ws.onopen = function () {
+    console.log("Connected to WebSocket server.\n");
+    ws.safeSend(JSON.stringify(payload));
+};
+ws.onclose = function (eve) {
+    ws.close();
+    console.warn('websocket连接被关闭');
+};
+ws.onerror = function (eve) {
+    console.error('websocket连接错误');
+    console.log(eve);
+};
+ws.onmessage = function (eve) {
+    console.log(eve.data, '\n\n');
+
+    var response = {};
+    try {
+        response = JSON.parse(eve.data);
+    } catch (e) {
+        console.log(e);
+        return;
+    }
+}
 
 
 
