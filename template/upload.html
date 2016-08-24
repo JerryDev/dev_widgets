@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>图片上传</title>
+<meta name="description" content="">
+<meta name="author" content="">
+<link rel="shortcut icon" type="image/x-icon" href="/favicon.ico">
+
+<style type="text/css">
+
+input[type="file"]{
+  display: none;
+}
+.upload{
+  margin: 1em 0 2em 3em;
+
+}
+.upload span{
+  height: 220px;
+  line-height: 220px;
+}
+.upload .image{
+  width: 400px;
+/*  height: 220px;
+  line-height: 200px;*/
+  border: 1px solid #222;
+  text-align: center;
+  cursor: pointer;
+  display: inline-block;
+  vertical-align: middle;
+}
+.upload .image img{
+  width: 100%;
+  height: 100%;
+}
+.upload span.tip{
+  color: #f00;
+}
+
+.submit{
+  cursor: pointer;
+  padding:10px 50px;
+  font-size: 18px;
+}
+
+
+</style>
+
+</head>
+<body>
+
+    <h1>图片上传</h1>
+
+    <form action="/api/v1/picture/upload" method="post" enctype="multipart/form-data">
+      <input type="hidden" name="MAX_FILE_SIZE" value="2048000">
+      <br><br>
+      <label>id</label> <input type="text" name="uid">
+      <br><br>
+      <p><input type="file" name="upfile" id="con_image_up" multiple></p>
+      <div class="upload">
+        <span class="image" id="con_img_show">点击添加图片</span>
+        <span class="tip"></span>
+      </div>
+
+      <p style="padding: 50px 0;">
+        <input type="submit" value="添加" class="submit">
+      </p>
+
+    </form>
+
+
+<!-- jQuery library -->
+<script src="http://cdn.bootcss.com/jquery/1.10.2/jquery.min.js"></script>
+
+<script type="text/javascript">
+
+/*
+ *  上传图片
+ *  @author guozhenyi
+ *  @date 2016-04-28 10:02
+ */
+
+
+jQuery(document).ready(function($){
+
+  /* 用点击事件触发文件上传控件的点击事件 */
+  $('#con_img_show').on('click', function(){
+    $('#con_image_up').click();
+  });
+
+  $('#con_image_up').on('change', function(){
+    if (window.File && window.FileList && window.FileReader && window.Blob) {
+      // var fileList = $('#con_image_up').prop('files');
+
+      var fileList = document.getElementById("con_image_up").files;
+      /* 如果没选择，则不变 */
+      if (fileList.length <= 0) {
+        return false;
+      };
+      var file = fileList[0];
+      /* 只能选择图片 */
+      if (! /image\//.test(file.type)) {
+        $('#con_img_show').parent().children('.tip').html('只能选择图片!');
+        return false;
+      }
+      var fReader = new FileReader();
+      fReader.readAsDataURL(file);
+      fReader.onload = function (e) {
+        $('#con_img_show').html('<img src="'+this.result+'">');
+
+        var fileInfo = this.result.match(/^data:(.*?);base64,(.*)$/);
+        var mime = fileInfo[1];
+        var base64 = fileInfo[2];
+        // console.log(fileInfo);
+        $.ajax({
+          url     : '/aj/pic/add?mime='+mime,
+          type    : 'POST',
+          data    : base64,
+          dataType: 'json',
+          contentType: 'application/octet-stream',
+          success : function(result){
+            console.log(result);
+            // if (result.code == 200) {
+
+            // }
+          }
+        });
+
+
+      }
+    } else {
+      $('#con_img_show').parent().children('.tip').html('浏览器不够先进，换用谷歌浏览器，可以预览图片哦');
+    }
+  });
+
+});
+
+
+
+
+
+
+
+
+</script>
+</body>
+</html>
