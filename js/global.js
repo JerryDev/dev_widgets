@@ -63,7 +63,7 @@ Object.prototype.clone = function(){
  * 获得url参数值
  * @datetime 2016-08-24 17:08
  */
-function GetQuery(key) {
+function query_get_value(key) {
     var url = window.document.location.href.toString();
     var urls = url.split("?");
     if (typeof urls[1] == "string" && urls[1].length > 0){
@@ -105,7 +105,7 @@ var $_GET = (function(){
 
 
 /**
- * 格式化日期
+ * 按照PHP Date函数的部分格式字符格式化日期
  * @author guozhenyi
  * @date 2016-03-23 17:16
  */
@@ -117,18 +117,16 @@ Date.prototype.format = function (fmt) {
     map = {
         'Y' : this.getFullYear(),
         'y' : this.getFullYear().toString().substr(2),
-        'M' : (this.getMonth()+1) < 10 ? '0'+(this.getMonth()+1) : (this.getMonth()+1),
-        'm' : this.getMonth()+1,
-        'D' : this.getDate() < 10 ? '0'+this.getDate() : this.getDate(),
-        'd' : this.getDate(),
+        'm' : (this.getMonth()+1) < 10 ? '0'+(this.getMonth()+1) : (this.getMonth()+1),
+        'n' : this.getMonth()+1,
+        'd' : this.getDate() < 10 ? '0'+this.getDate() : this.getDate(),
+        'j' : this.getDate(),
         'H' : this.getHours() < 10 ? '0'+this.getHours() : this.getHours(),
-        'h' : this.getHours(),
-        'I' : this.getMinutes() < 10 ? '0'+this.getMinutes() : this.getMinutes(),
-        'i' : this.getMinutes(),
-        'S' : this.getSeconds() < 10 ? '0'+this.getSeconds() : this.getSeconds(),
-        's' : this.getSeconds(),
-        'u' : this.getMilliseconds(),
-        'q' : Math.floor((this.getMonth()+3)/3)
+        'G' : this.getHours(),
+        'i' : this.getMinutes() < 10 ? '0'+this.getMinutes() : this.getMinutes(),
+        's' : this.getSeconds() < 10 ? '0'+this.getSeconds() : this.getSeconds(),
+        'u' : this.getMilliseconds(), // 毫秒
+        'q' : Math.floor((this.getMonth()+3)/3) // 季度
     };
     for (i in map) {
         if (fmt.indexOf(i) != -1) {
