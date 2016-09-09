@@ -45,7 +45,8 @@ if (! $mysqli -> select_db(DBName)) { // 无效的数据库
 
 $redirect_uri = isset($_GET['redirect_uri']) ? urldecode(trim($_GET['redirect_uri'])) : null;
 
-$do = isset($_GET['do']) ? trim($_GET['do']) : null;
+// $do = isset($_GET['do']) ? trim($_GET['do']) : null;
+$do = isset($_POST['do']) ? trim($_POST['do']) : (isset($_GET['do']) ? trim($_GET['do']) : null);
 
 switch ($do) {
     case 'up':
@@ -92,14 +93,16 @@ switch ($do) {
             exit;
         }
 
-        $nickname = $username;
+        $mobile = $username;
         $avatar = 'assets/avatar/'. mt_rand(1,20) .'.jpg';
         // $avatar = 'assets/avatar/default.jpg';
 
+        $scope = '0123456789abcdefghijklmnopqrstuvwxyz';
+        $nickname = 'u'. substr(str_shuffle($scope), mt_rand(0, strlen($scope)-6), 6);
+
         //存储用户注册信息,并且写入登录信息
         $password = md5($password);  // ***** md5已经不安全，建议用其他加密方式加密密码后存储 *****
-
-        $sql = "INSERT INTO `users` (`username`,`password`,`nickname`,`avatar`,`created_at`) VALUES('{$username}','{$password}','{$nickname}','{$avatar}','" . date('Y-m-d H:i:s') . "')";
+        $sql = "INSERT INTO `users` (`username`,`password`,`mobile`,`nickname`,`avatar`,`created_at`) VALUES('{$username}','{$password}','{$mobile}','{$nickname}','{$avatar}','" . date('Y-m-d H:i:s') . "')";
         if ($mysqli->query($sql)) {
             if ($mysqli->affected_rows > 0) {
 
@@ -140,9 +143,17 @@ switch ($do) {
             echo json_encode($total, JSON_UNESCAPED_UNICODE);
             exit;
         }
+
+        if (! preg_match('/^(13[0-9]|15[0-9]|17[0-9]|18[0-9]|14[57])[0-9]{8}$/', $username)) {
+            $total['code'] = 411;
+            $total['msg'] = '本系统只支持手机号登录';
+            echo json_encode($total, JSON_UNESCAPED_UNICODE);
+            exit;
+        }
+
         if (empty($password) || strlen($password) < 6) {
             $total['code'] = 411;
-            $total['msg'] = '请填写密码';
+            $total['msg'] = '请填写6位以上密码';
             echo json_encode($total, JSON_UNESCAPED_UNICODE);
             exit;
         }
@@ -153,7 +164,7 @@ switch ($do) {
         if ($result = $mysqli->query($sql)) {
             if ($line = $result->fetch_assoc()) {
                 // ***** md5已经不安全，建议用其他加密方式加密密码后存储 *****
-                if ($line['password'] == md5($password)) { 
+                if ($line['password'] == md5($password)) {
 
                     $_SESSION['chat_mob']['uid'] = $line['id'];
                     $_SESSION['chat_mob']['expires'] = time() + 60*60*6;
