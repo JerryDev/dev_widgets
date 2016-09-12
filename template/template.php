@@ -36,48 +36,12 @@ define('START_TIME', microtime(true));
 
 define(_WEBROOT_, str_replace('\\', '/', dirname(__FILE__)));
 
+
 // php 版本判断
-
-
-
-
-
-
-
-
-
-
-
-
-
-// 配置数据库
-$cfg = array(
-    'driver'    => 'mysql',
-    'host'      => '127.0.0.1:3306',
-    'username'  => 'root',
-    'password'  => '',
-    'database'  => 'database',
-    'charset'   => 'utf8',
-);
-
-
-$mysqli -> new mysqli($cfg['host'], $cfg['username'], $cfg['password']);
-
-if($mysqli -> connect_errno){
-    exit('connect error: ', $mysqli -> connect_error);
+if (version_compare(PHP_VERSION, '5.4.0', '<')) {
+    echo '版本过低';
+    exit;
 }
-
-$sql = 'select * from `table_name` order by `id` ASC';
-
-$data = array();
-
-if($result = $mysqli -> query($sql)){
-    while ($line = $result -> fetch_assoc()) {
-        $data[] = $line;
-        // ...
-    }
-}
-
 
 
 
