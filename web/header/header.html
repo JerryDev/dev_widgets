@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+    <title>顶部菜单栏示例</title>
+    <link rel="stylesheet" type="text/css" href="assets/css/header.css">
+</head>
+<body>
+
+<header class="qz_header">
+    <a href="#" class="qz_back" onclick="this.href=this.href+'?'+Math.random()">
+        <i class="icon"></i>
+    </a>
+    <span class="qz_order" id="qz_order_ex">最新发表<i class="icon"></i></span>
+    <a href="javascript:void(0)" class="qz_user">
+        <i id="icon_show" class="icon"></i>
+    </a>
+    <a href="javascript:void(0)" class="qz_add">
+        <i class="icon"></i>
+    </a>
+</header>
+<div class="order_box" id="qz_order_box">
+    <a class="ob_item" href="javascript:void(0)">
+        <span>最新发表</span>
+    </a>
+    <a class="ob_item" href="javascript:void(0)">
+        <span>最后回复</span>
+    </a>
+    <a class="ob_item" href="javascript:void(0)">
+        <span>我关注的</span>
+    </a>
+</div>
+
+
+
+<header class="qz_header" style="top:70px;">
+    <a href="javascript:void(0)" class="qz_back">
+        <i class="icon"></i>
+    </a>
+    <span class="qz_title">圈子</span>
+    <a href="javascript:void(0)" class="qz_user">
+        <i class="icon"></i>
+    </a>
+</header>
+
+
+<header class="qz_header" style="top:140px;">
+    <a href="javascript:void(0)" class="qz_back">
+        <i class="icon"></i>
+    </a>
+    <a href="javascript:void(0)" class="qz_send" id="add_post">发送</a>
+    <span class="qz_name">发布帖子</span>
+</header>
+
+
+<header class="qz_header" style="top:210px;">
+    <a href="javascript:void(0)" class="qz_back">
+        <i class="icon"></i>
+    </a>
+    <span class="qz_title">详情</span>
+</header>
+
+
+<header class="qz_header" style="top:280px;">
+    <a href="javascript:void(0)" class="qz_back">
+        <i class="icon"></i>
+    </a>
+    <span class="qz_nickname">昵称</span>
+</header>
+
+
+<header class="qz_header" style="top:350px;">
+    <a href="javascript:void(0)" class="qz_back">
+        <i class="icon"></i>
+    </a>
+    <a href="javascript:void(0)" class="qz_user">
+        <i class="icon"></i>
+    </a>
+    <span class="qz_name">完善信息</span>
+</header>
+
+<script type="text/javascript" src="http://cdn.bootcss.com/jquery/1.10.2/jquery.min.js"></script>
+<script type="text/javascript">
+
+    (function ($) {
+        /*
+         * 菜单栏特效 弹出选择最新发表 最后回复等
+         *
+         */
+        $('#qz_order_ex').on('click', function (eve) {
+            eve.preventDefault();
+            eve.stopPropagation();
+            if ($('#qz_order_box').css('display') == 'none') {
+                $('#qz_order_ex i').addClass('s');
+            } else {
+                $('#qz_order_ex i').removeClass('s');
+            }
+            $('#qz_order_box').toggle();
+        });
+
+    })(jQuery);
+
+
+</script>
+
+</body>
+</html>
