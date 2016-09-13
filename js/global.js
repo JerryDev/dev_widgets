@@ -60,50 +60,69 @@ Object.prototype.clone = function(){
     return objClone;
 }
 
+/*
+ * 此函数引自《JavaScript 权威指南》
+ * 
+ */
+function getArgs() {
+    var args = {};
+    var query = location.search.substring(1);
+    // Get query string
+    var pairs = query.split("&");
+    // Break at ampersand
+    for (var i = 0; i < pairs.length; i++) {
+        var pos = pairs[i].indexOf('=');
+        // Look for "name=value"
+        if (pos == -1) continue; // If not found, skip
+        var argname = pairs[i].substring(0,pos); // Extract the name
+        var value = pairs[i].substring(pos+1); // Extract the value
+        value = decodeURIComponent(value); // Decode it, if needed
+        args[argname] = value; // Store as a property
+    }
+    return args; // Return the object
+ }
+
 
 /*
  * 获得url参数值
+ * @author guozhenyi
  * @datetime 2016-08-24 17:08
+ * 2016-09-13 用location.search 重写
  */
-function query_get_value(key) {
-    var url = window.document.location.href.toString();
-    var urls = url.split("?");
-    if (typeof urls[1] == "string" && urls[1].length > 0){
-        var qArr = urls[1].split("&");
-        var get = {};
-        for (var i=0; i < qArr.length; i++) {
-            var kv = qArr[i].split('=');
-            get[kv[0]] = decodeURI(kv[1]);
+function get_query_value(key) {
+    var queryString = window.location.search.substring(1); // 去掉?号
+    var queryArr = queryString.split('&');
+    var _get = {}, qVal;
+    for (var i = 0; i < queryArr.length; i++) {
+        qVal = queryArr[i].replace(/(^\s*)|(\s*$)/g, '');
+        qArr = qVal.split('=');
+        if (key == decodeURI(qArr[0]) && qArr[1]) {
+            return decodeURI(qArr[1]);
         }
-        if (get[key]) {
-            return get[key];
-        } else {
-            return undefined;
-        }
-        // return get;
-    } else {
-        return undefined;
     }
+    return undefined;
 }
 
 /*
  * 模拟PHP的$_GET超全局变量
+ * 我做了一些优化
+ * 其实还需要做个判断，如果是这种情况： ?a=1&b&c=2 ，需要做判断
  */
-var $_GET = (function(){
-    var url = window.document.location.href.toString();
-    var urls = url.split("?");
-    if (typeof urls[1] == "string" && urls[1].length > 0){
-        var qArr = urls[1].split("&");
-        var get = {};
-        for (var i=0; i < qArr.length; i++) {
-            var kv = qArr[i].split('=');
-            get[kv[0]] = decodeURI(kv[1]);
-        }
-        return get;
-    } else {
-        return {};
-    }
-})();
+// var $_GET = (function(){
+//     var url = window.location.href.toString();
+//     var urls = url.split("?");
+//     if (typeof urls[1] == "string" && urls[1].length > 0){
+//         var qArr = urls[1].split("&");
+//         var get = {};
+//         for (var i=0; i < qArr.length; i++) {
+//             var kv = qArr[i].split('=');
+//             get[kv[0]] = decodeURI(kv[1]);
+//         }
+//         return get;
+//     } else {
+//         return {};
+//     }
+// })();
 
 
 /**
