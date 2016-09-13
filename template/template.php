@@ -33,9 +33,10 @@ date_default_timezone_set('Asia/Shanghai');
 
 // 定义页面开始执行时间，方便计算页面执行时间
 define('START_TIME', microtime(true));
-
-define(_WEBROOT_, str_replace('\\', '/', dirname(__FILE__)));
-
+// 定义全局项目根目录 看哪个好用用哪个
+define('APP_ROOT', str_replace('\\', '/', dirname(__FILE__)));
+define('WEB_PATH', __DIR__);
+define('APP_ROOT_DIR', __DIR__);
 
 // php 版本判断
 if (version_compare(PHP_VERSION, '5.4.0', '<')) {
