@@ -22,8 +22,10 @@ String.prototype.trim = function () {
  *
  */
 function in_array (val, arr) {
-    for (var i = 0; i < arr.length; i++) {
-        if (arr[i] == val) return true;
+    if (Object.prototype.toString.call(arr) === '[object Array]') {
+        for (var i = 0; i < arr.length; i++) {
+            if (arr[i] == val) return true;
+        }
     }
     return false;
 }
@@ -42,11 +44,11 @@ Array.prototype.has = function(val) {
  */
 Object.prototype.clone = function(){
     var objClone;
-    if ( this.constructor == Object ) objClone = new this.constructor(); 
+    if (this.constructor == Object) objClone = new this.constructor(); 
     else objClone = new this.constructor(this.valueOf()); 
-    for ( var key in this ) {
-        if ( objClone[key] != this[key] ) {
-            if ( typeof(this[key]) == 'object' ) {
+    for (var key in this) {
+        if (objClone[key] != this[key]) {
+            if (typeof(this[key]) == 'object') {
                 objClone[key] = this[key].clone();
             } else {
                 objClone[key] = this[key];
@@ -188,41 +190,41 @@ WebSocket.prototype.safeSend = function (message, callback) {
  * @datetime 2016-08-24 18:12
  */
 
-var ws;
-var payload = {
-    'type':'login',
-    'uid': '1',
-    'rid': '1'
-}
-try {
-    ws = new WebSocket('ws://127.0.0.1:6666');
-} catch (e) {
-    console.log(e);
-    // throw exception('websocket connect error');
-}
-ws.onopen = function () {
-    console.log("Connected to WebSocket server.\n");
-    ws.safeSend(JSON.stringify(payload));
-};
-ws.onclose = function (eve) {
-    ws.close();
-    console.warn('websocket连接被关闭');
-};
-ws.onerror = function (eve) {
-    console.error('websocket连接错误');
-    console.log(eve);
-};
-ws.onmessage = function (eve) {
-    console.log(eve.data, '\n\n');
+// var ws;
+// var payload = {
+//     'type':'login',
+//     'uid': '1',
+//     'rid': '1'
+// }
+// try {
+//     ws = new WebSocket('ws://127.0.0.1:6666');
+// } catch (e) {
+//     console.log(e);
+//     // throw exception('websocket connect error');
+// }
+// ws.onopen = function () {
+//     console.log("Connected to WebSocket server.\n");
+//     ws.safeSend(JSON.stringify(payload));
+// };
+// ws.onclose = function (eve) {
+//     ws.close();
+//     console.warn('websocket连接被关闭');
+// };
+// ws.onerror = function (eve) {
+//     console.error('websocket连接错误');
+//     console.log(eve);
+// };
+// ws.onmessage = function (eve) {
+//     console.log(eve.data, '\n\n');
 
-    var response = {};
-    try {
-        response = JSON.parse(eve.data);
-    } catch (e) {
-        console.log(e);
-        return;
-    }
-}
+//     var response = {};
+//     try {
+//         response = JSON.parse(eve.data);
+//     } catch (e) {
+//         console.log(e);
+//         return;
+//     }
+// }
 
 
 
@@ -403,12 +405,12 @@ var Base64 = {
     }
 };
 
-console.group('Test Base64: ');
-var b64 = Base64.encode('Hello, oschina！又是一年春来到~');
-console.log(b64);
-console.log(Base64.decode(b64));
-console.groupEnd();
 
+// console.group('Test Base64: ');
+// var b64 = Base64.encode('Hello, oschina！又是一年春来到~');
+// console.log(b64);
+// console.log(Base64.decode(b64));
+// console.groupEnd();
 
 
 
