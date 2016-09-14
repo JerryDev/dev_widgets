@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="format-detection" content="telephone=no">
+    <title>发帖</title>
+    <link href="assets/css/header.css" rel="stylesheet" type="text/css">
+    <link href="assets/css/smile.css" rel="stylesheet" type="text/css">
+    <link href="assets/css/post_add.css" rel="stylesheet" type="text/css">
+</head>
+<body>
+
+<header class="qz_header">
+    <a href="javascript:void(0)" class="qz_back">
+        <i class="icon"></i>
+    </a>
+    <a href="javascript:void(0)" class="qz_send" id="add_post">发送</a>
+    <span class="qz_name">发布帖子</span>
+</header>
+
+<div class="wrapper">
+    <section class="postInput">
+        <div class="postContent" id="post_content" contenteditable="true"></div>
+    </section>
+
+    <section class="postTool clear">
+        <a class="ptEmoji" id="emoji_btn" href="javascript:void(0)">
+            <i class="icon"></i>
+        </a>
+        <a class="ptImg" id="img_btn" href="javascript:void(0)">
+            <i class="icon"></i>
+        </a>
+        <a class="ptUser" id="at_user_btn" href="javascript:void(0)">
+            <i class="icon"></i>
+        </a>
+    </section>
+
+</div>
+
+<!-- / 上传图片预览 -->
+<section class="pictureList clear" id="picture_list">
+
+</section>
+<!-- 上传图片预览 / -->
+
+
+<input type="file" accept="image/*" id="file_input" style="display:none;">
+
+
+
+<div class="loading" id="loading" style="position:absolute;width:100%;height:100%;top:0;left:0;display:none;overflow:hidden;background-color:rgba(0,0,0,0.8);z-index:1000;">
+    <img src="assets/images/loading.gif" style="position: absolute;width: 32px;height: 32px;top:50%;left:50%;margin: -16px 0 0 -16px;">
+</div>
+
+<script type="text/javascript" src="assets/js/jquery-1.10.2.min.js"></script>
+<script type="text/javascript" src="assets/layer_mobile/layer.js"></script>
+<script type="text/javascript" src="assets/localResizeIMG-master/lrz.bundle.js"></script>
+<script type="text/javascript">
+
+    var Config = {
+        host: '', // 表情域名地址 http://127.0.0.1/
+        tid: 1, /* 帖子分类ID */
+        fol: [{"fid":22,"nickname":"天王盖地虎"},{"fid":33,"nickname":"宝塔镇河妖"}],
+        imgs: [] // 存储用户上传图片信息
+    };
+
+
+    /**
+     * 侦测文本框值变化
+     */
+    function detect_text_change() {
+        if ($('#post_content')[0].innerHTML.length == 0) {
+            $('#add_post').css('color', '#fff');
+        } else {
+            $('#add_post').css('color', '#fff');
+        }
+
+        // 这里不能这样写，会导致光标位置被重置到行首
+        // var content = $('#post_content')[0].innerHTML.replace(/<\/?[^<>a][^<>]*?>/g, '');
+        // $('#post_content').html(content).focus();
+
+    }
+
+    (function ($) {
+
+        // if (!Config.tid) {
+        //     layer.open({
+        //         type: 0,
+        //         content: '参数错误',
+        //         style: 'color:#fff; background-color:rgba(0,0,0,0.8);',
+        //         shade: true
+        //     });
+        //     setTimeout(function () {
+        //         window.location.href = './?' + Math.random();
+        //     }, 1500);
+        //     return;
+        // }
+
+        // 侦测输入框值变化
+        // detect_text_change();
+        // $('#post_content').on('input', detect_text_change); // IE propertychange
+
+
+        // 绑定用户发帖事件
+        $('#add_post').on('click', function(eve){
+            var $addBtn = $('#add_post');
+            var content = $.trim($('#post_content')[0].innerHTML);
+
+            layer.open({
+                content: '现在不能发帖',
+                skin: 'msg',
+                time: 2  //2秒后自动关闭
+            });
+            return;
+
+            // 过滤除a标签和img标签外的所有标签
+            content = content.replace(/<[^(?:a|img|/)]\s?[^<>]*?>/g, '').replace(/<\/[^(?:a|img)][^<>]*?>/g, '');
+
+            if (content.length == 0) {
+                layer.open({
+                    content: '帖子不能为空',
+                    skin: 'msg',
+                    time: 2 //2秒后自动关闭
+                });
+                return;
+            }
+
+            if ($addBtn.data('clicked') >= 1) {
+                layer.open({
+                    content: '处理中...',
+                    skin: 'msg',
+                    time: 2  //2秒后自动关闭
+                });
+                return;
+            }
+            $addBtn.data('clicked', 1);
+
+            $.ajax({
+                url: 'api/post.php?do=add',
+                type: 'POST',
+                data: {tid: Config.tid, content: content, imgs: Config.imgs},
+                dataType: 'json',
+                success: function (res) {
+                    if (res.code == 200) {
+                        layer.open({
+                            content: '发帖成功'
+                            , skin: 'msg'
+                            , time: 2 //2秒后自动关闭
+                        });
+                        $('#post_content').val('');
+                        setTimeout(function () {
+                            location.href = './post_list.php?id=' + Config.tid;
+                        }, 1500);
+                    } else if (res.code == 401) {
+                        window.location.href = '../login.php?' + Math.random();
+                    } else {
+                        layer.open({
+                            content: res.msg,
+                            skin: 'msg',
+                            time: 2   //2秒后自动关闭
+                        });
+                    }
+                }
+            });
+        });
+
+        // 显示Emoji表情
+        $('#emoji_btn').on('click', function (eve) {
+            eve.preventDefault();
+            eve.stopPropagation();
+
+            var that = this;
+            var top = $(that).offset().top + $(that).height();
+            // var top = $(that).offset().top + 40;
+
+            var emojiMap = [["wx", "微笑"], ["pz", "撇嘴"], ["se", "色"], ["fd", "发呆"], ["ll", "流泪"], ["hx", "害羞"],
+                ["bz", "闭嘴"], ["shui", "睡"], ["dk", "大哭"], ["gg", "尴尬"], ["fn", "发怒"], ["tp", "调皮"],
+                ["zy", "呲牙"], ["jy", "惊讶"], ["ng", "难过"], ["lengh", "冷汗"], ["zk", "抓狂"], ["to", "吐"],
+                ["tx", "偷笑"], ["by", "白眼"], ["am", "傲慢"], ["je", "饥饿"], ["kun", "困"], ["jk", "惊恐"],
+                ["lh", "流汗"], ["hanx", "憨笑"], ["fendou", "奋斗"], ["zm", "咒骂"], ["yw", "疑问"], ["xu", "嘘"],
+                ["yun", "晕"], ["shuai", "衰"], ["kl", "骷髅"], ["qd", "敲打"], ["zj", "再见"], ["ch", "擦汗"],
+                ["koub", "抠鼻"], ["xdl", "糗大了"], ["huaix", "坏笑"], ["zhh", "左哼哼"], ["yhh", "右哼哼"],
+                ["hq", "哈欠"], ["bs", "鄙视"], ["wq", "委屈"], ["kkl", "快哭了"], ["yx", "阴险"], ["qq", "亲亲"],
+                ["xia", "吓"], ["kel", "可怜"], ["cd", "菜刀"], ["xg", "西瓜"], ["kf", "咖啡"], ["fan", "饭"],
+                ["zt", "猪头"], ["mg", "玫瑰"], ["dx", "凋谢"], ["zc", "嘴唇"], ["ax", "爱心"], ["zd", "炸弹"],
+                ["yl", "月亮"], ["ty", "太阳"], ["yb", "拥抱"], ["qiang", "强"], ["ruo", "弱"], ["ws", "握手"],
+                ["sl", "胜利"], ["bq", "抱拳"], ["gy", "勾引"], ["no", "NO"], ["ok", "OK"], ["aq", "爱情"], ["fw", "飞吻"]];
+
+            var id = new Date().getTime();
+            var emo_li = '';
+            for (var i = 0; i < emojiMap.length; i++) {
+                emo_li += '<li><img src="' + Config.host + 'assets/em/qq/' + emojiMap[i][0] + '.gif"></li>';
+            }
+            var emojiBox = '<div class="smile_box" id="' + id + '" style="top: ' + top + 'px;"><div class="smile_list"><ul>' +
+                emo_li + '</ul></div></div>';
+
+            var $emojiBox = $(emojiBox);
+            $emojiBox.css('display', 'none');
+
+            $emojiBox.find('ul').on('click', 'li', function () {
+                // console.log($(this)[0].innerHTML);
+                $('#post_content').append($(this)[0].innerHTML);
+                var pcon = document.getElementById('post_content');
+                pcon.scrollTop = pcon.scrollHeight - pcon.clientHeight;
+            });
+
+            $emojiBox.on('click', function (eve) {
+                eve.stopPropagation();
+            });
+
+            $(document).on('click', function (eve) {
+                $('#' + id).hide();
+            });
+            $('body').append($emojiBox);
+            $emojiBox.css('display', 'block');
+
+            $(that).off('click').on('click', function (eve) {
+                eve.stopPropagation();
+                $('#' + id).toggle();
+            });
+
+        });
+
+        // At 用户
+        $('#at_user_btn').on('click', function (eve) {
+            eve.preventDefault();
+            eve.stopPropagation();
+
+            var that = this;
+
+            var top = $(that).offset().top + $(that).height();
+            var left = $(that).offset().left + $(that).width() / 2 - 150 / 2; // 敷一点
+            var id = new Date().getTime();
+            var fol_li = '';
+            for (var i = 0; i < Config.fol.length; i++) {
+                fol_li += '<li><a href="my.php?uid=' + Config.fol[i].fid + '" data-at="' + Config.fol[i].fid + '">@' + Config.fol[i].nickname + '</a></li>';
+            }
+            var atBox = '<div class="at_user_box" id="' + id + '" style="left: ' + left + 'px;top: ' + top + 'px;"><ul>' + fol_li + '</ul></div>';
+            var $atBox = $(atBox);
+            $atBox.css('display', 'none');
+
+            $atBox.find('ul').on('click', 'li', function (eve) {
+                eve.preventDefault();
+                eve.stopPropagation();
+                $('#post_content').append($(this)[0].innerHTML).append(' ');
+                var pcon = document.getElementById('post_content');
+                pcon.scrollTop = pcon.scrollHeight - pcon.clientHeight;
+            });
+
+            $atBox.on('click', function (eve) {
+                eve.stopPropagation();
+            });
+
+            $(document).on('click', function (eve) {
+                $('#' + id).hide();
+            });
+            $('body').append($atBox);
+            $atBox.css('display', 'block');
+
+            $('#at_user_btn').off('click').on('click', function (eve) {
+                eve.stopPropagation();
+                $('#' + id).toggle();
+            });
+
+        });
+
+
+        // 发送图片
+        $('#img_btn').on('click', function () {
+            $('#file_input').click();
+        });
+        $('#picture_list').on('click', '.rm', function (eve) {
+            eve.preventDefault();
+            eve.stopPropagation();
+            var that = this;
+            Config.imgs.splice($(that).data('i'), 1);
+            $(that).parent('.picBox').remove();
+        });
+
+        //上传图片
+        $('#file_input').change(function () {
+            lrz(this.files[0], {width: 400, quality: 1}).then(function (result) {
+                if ($('#picture_list .picBox').length >= 9) {
+                    layer.open({
+                        type: 0,
+                        content: '只能上传9张图片哦',
+                        time: 2,
+                        style: 'color:#fff; background-color:rgba(0,0,0,0.8);',
+                        shade: false,
+                    });
+                    return;
+                }
+
+                var img = new Image();
+                img.src = result.base64;
+
+                var len = Config.imgs.push({'w':img.width,'h':img.height,'url':result.base64});
+                var htm = '';
+                if (img.height > img.width) {
+                    htm = '<div class="picBox"><img class="pic fix" src="'+ result.base64 +'"><span class="rm" data-i="'+ (len-1) +'"></span></div>';
+                } else {
+                    htm = '<div class="picBox"><img class="pic" src="'+ result.base64 +'"><span class="rm" data-i="'+ (len-1) +'"></span></div>';
+                }
+                $('#picture_list').append(htm);
+
+                // var submitData = {
+                //     base64_string: result.base64,
+                // };
+                // $('#loading').show();
+                // $.ajax({
+                //     type: "POST",
+                //     url: "../upload.php",
+                //     data: submitData,
+                //     dataType: "json",
+                //     success: function (res) {
+                //         if (res.code == 200) {
+                //             var len = Config.imgs.push({'w':res.w,'h':res.h,'url':res.url});
+                //             var htm = '';
+                //             if (res.h > res.w) {
+                //                 htm = '<div class="picBox"><img class="pic fix" src="'+ res.url +'"><span class="rm" data-i="'+ (len-1) +'"></span></div>';
+                //             } else {
+                //                 htm = '<div class="picBox"><img class="pic" src="'+ res.url +'"><span class="rm" data-i="'+ (len-1) +'"></span></div>';
+                //             }
+                //             $('#picture_list').append(htm);
+                //         }
+                //         $('#loading').hide();
+                //     }
+                // });
+            });
+        });
+
+    })(jQuery);
+
+
+</script>
+</body>
+</html>

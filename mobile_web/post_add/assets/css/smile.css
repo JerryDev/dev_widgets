@@ -1,0 +1,57 @@
+@charset="utf-8";
+
+/*
+ * 圈子里发表情的样式
+ * @guozhenyi
+ * @date 2016-09-01 17:27
+ */
+
+.smile_box {
+    position: absolute;
+    left:2%;
+    z-index: 999;
+    width: 96%;
+    box-sizing: border-box;
+    _border: 1px solid red;
+    background: #fff;
+}
+.smile_box .smile_content {
+    position: relative;
+    color: #333;
+    text-decoration: none;
+    border-radius: 3px;
+    border: 1px solid #ccc;
+    background: #fff;
+    box-shadow: 0 4px 20px 1px rgba(0,0,0,0.2);
+}
+.smile_box .smile_list {
+    padding: 1%;
+}
+.smile_box ul {
+    margin: 0;
+    padding: 0;
+    border-left: 1px solid #e8e8e8;
+    border-top: 1px solid #e8e8e8;
+    overflow: hidden;
+    list-style: none;
+}
+.smile_box ul li {
+    float: left;
+    _margin: -1px 0 0 -1px;
+    padding: 2px;
+    height: 32px;
+    width: 32px;
+    overflow: hidden;
+    text-align: center;
+    cursor: pointer;
+    border: 1px solid #e8e8e8;
+    border-collapse: collapse;
+}
+.smile_box ul img {
+    border: none;
+    outline: none;
+    vertical-align: bottom;
+}
+
+
+

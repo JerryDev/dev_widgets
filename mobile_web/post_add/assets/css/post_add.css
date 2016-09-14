@@ -1,0 +1,202 @@
+@charset="utf-8";
+
+* {
+    -webkit-box-sizing: border-box;
+            box-sizing: border-box;
+}
+html, body {
+    width: 100%; height: 100%;
+    margin: 0; padding: 0;
+}
+body {
+    font-size: 14px;
+    line-height: 20px;
+    font-family: "Microsoft Yahei",Helvetica,Arial,sans-serif;
+    /*font: 16px/1.5 Helvetica,Arial,sans-serif;*/
+    color: #333;
+    background: #f3f3f3;
+}
+ul,ol,li {list-style: none; }
+a {color: #1380c4; text-decoration: none; outline: none; }
+.clear:after {display: block; height: 0; content: "\3000";visibility: hidden;clear: both; }
+
+
+.wrapper {
+    position: relative;
+    top: 63px;
+    /*padding-top: 63px;*/
+    min-height: 185px;
+    overflow: hidden;
+}
+
+.postInput {
+    width: 100%;
+    padding: 8px;
+    border-bottom: 1px solid #bbb;
+    background: #fff;
+}
+.postContent {
+    width: 100%;
+    height: 128px;
+    line-height: 25px;
+    font-size: 16px;
+    vertical-align: middle;
+    border: none;
+    outline: none;
+    resize: none;
+    border-radius: 3px;
+    overflow-x: hidden;
+    overflow-y: auto;
+}
+.postContent a, .postContent img {
+    text-decoration: none;
+    border: none;
+    vertical-align: middle;
+}
+
+.postTool {
+    position: relative;
+    height: 40px;
+    overflow: hidden;
+    text-align: center;
+    background: #fff;
+}
+.postTool a {
+    display: inline-block;
+    width: 60px;
+    height: 40px;
+    text-align: center;
+    color: #fff;
+}
+.postTool .ptEmoji {
+    float: left;
+    margin-left: 10px;
+}
+.postTool .ptEmoji i {
+    margin: 10px auto;
+    background: url(../images/face_20.png) no-repeat;
+}
+.postTool .ptUser i {
+    margin: 10px auto;
+    background: url(../images/at_20.png) no-repeat;
+}
+.postTool .ptImg {
+    float: right;
+    margin-right: 10px;
+}
+.postTool .ptImg i {
+    margin: 10px auto;
+    background: url(../images/img_20.png) no-repeat;
+}
+
+.postTool .icon {
+    display: inline-block;
+    width:20px; height:20px;
+    white-space:nowrap;
+    letter-spacing: -1em;
+    text-indent: -99em; 
+    color: transparent;
+    /* IE7 */
+    *text-indent: 0;
+    *zoom: expression( this.runtimeStyle['zoom'] = '1', this.innerHTML = '\3000');
+}
+.postTool .icon:before {
+    content: '\3000';
+}
+
+
+.pictureList {
+    position: relative;
+    top: 63px;
+    margin: 2px 5px;
+}
+.pictureList .picBox {
+    float: left;
+    position: relative;
+    padding-bottom: 32%;
+    width: 32%;
+    overflow: hidden;
+    margin: 2px 0 0 2px;
+}
+.pictureList .picBox:after {
+    content: "\3000";
+    position: absolute;
+    left: 0;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    border: 1px solid rgba(0, 0, 0, .05);
+}
+
+.pictureList .picBox .pic {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: auto;
+    min-width: 100%;
+    height: 100%;
+    -webkit-transform: perspective(1px) translate(-50%,-50%);
+       -moz-transform: perspective(1px) translate(-50%,-50%);
+         -o-transform: translate(-50%,-50%);
+        -ms-transform: translate(-50%,-50%);
+            transform: perspective(1px) translate(-50%,-50%);
+}
+.pictureList .picBox .fix {
+    width: 100%;
+    height: auto;
+    min-height: 100%;
+}
+
+.pictureList .rm {
+    display: inline-block;
+    position: absolute;
+    right: 0;
+    top: 0;
+    z-index: 2;
+    width: 20px;
+    height: 20px;
+    cursor: pointer;
+    background: url(../images/close.png) no-repeat;
+}
+
+
+
+
+/* @ 用户列表样式 */
+
+.at_user_box {
+    position: absolute;
+    left: 20%;
+    top: 210px;
+    z-index: 999;
+    width: 150px;
+    border-radius: 5px;
+    background: #fff;
+    box-sizing: border-box;
+    box-shadow: 0 4px 20px 1px rgba(0,0,0,0.2);
+}
+
+.at_user_box ul {
+    margin: 10px 5px;
+    padding: 0;
+    _border-left: 1px solid #e8e8e8;
+    _border-top: 1px solid #e8e8e8;
+    overflow: hidden;
+    list-style: none;
+}
+
+.at_user_box li {
+    margin: 5px 0;
+    padding: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.at_user_box a {
+    font-size: 14px;
+    text-decoration: none;
+}
+
+
+
