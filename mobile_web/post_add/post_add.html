@@ -221,7 +221,6 @@
                 if (! emojiClick) {
                     $('#' + id).hide();
                 }
-
             });
 
             $('body').append($emojiBox);
@@ -262,18 +261,16 @@
 
             $(document).on('click', function (eve) {
                 eve.stopPropagation();
-
-                eve.stopPropagation();
                 var path = eve.originalEvent.path;
                 var pathLen = path.length;
-                var emojiClick = false;
+                var atClick = false;
                 for (var i = 0; i < pathLen; i++) {
                     if (path[i].id && path[i].id == 'at_user_btn') {
-                        emojiClick = true;
+                        atClick = true;
                         break;
                     }
                 }
-                if (! emojiClick) {
+                if (! atClick) {
                     $('#' + id).hide();
                 }
             });
