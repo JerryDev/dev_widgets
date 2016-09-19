@@ -199,25 +199,36 @@
             var $emojiBox = $(emojiBox);
             $emojiBox.css('display', 'none');
 
-            $emojiBox.find('ul').on('click', 'li', function () {
-                // console.log($(this)[0].innerHTML);
+            $emojiBox.find('ul').on('click', 'li', function (eve) {
+                eve.preventDefault();
+                eve.stopPropagation();
                 $('#post_content').append($(this)[0].innerHTML);
                 var pcon = document.getElementById('post_content');
                 pcon.scrollTop = pcon.scrollHeight - pcon.clientHeight;
             });
 
-            $emojiBox.on('click', function (eve) {
+            $(document).on('click', function (eve) {
                 eve.stopPropagation();
+                var path = eve.originalEvent.path;
+                var pathLen = path.length;
+                var emojiClick = false;
+                for (var i = 0; i < pathLen; i++) {
+                    if (path[i].id && path[i].id == 'emoji_btn') {
+                        emojiClick = true;
+                        break;
+                    }
+                }
+                if (! emojiClick) {
+                    $('#' + id).hide();
+                }
+
             });
 
-            $(document).on('click', function (eve) {
-                $('#' + id).hide();
-            });
             $('body').append($emojiBox);
             $emojiBox.css('display', 'block');
 
             $(that).off('click').on('click', function (eve) {
-                eve.stopPropagation();
+                // eve.stopPropagation();
                 $('#' + id).toggle();
             });
 
@@ -249,18 +260,29 @@
                 pcon.scrollTop = pcon.scrollHeight - pcon.clientHeight;
             });
 
-            $atBox.on('click', function (eve) {
+            $(document).on('click', function (eve) {
                 eve.stopPropagation();
+
+                eve.stopPropagation();
+                var path = eve.originalEvent.path;
+                var pathLen = path.length;
+                var emojiClick = false;
+                for (var i = 0; i < pathLen; i++) {
+                    if (path[i].id && path[i].id == 'at_user_btn') {
+                        emojiClick = true;
+                        break;
+                    }
+                }
+                if (! emojiClick) {
+                    $('#' + id).hide();
+                }
             });
 
-            $(document).on('click', function (eve) {
-                $('#' + id).hide();
-            });
             $('body').append($atBox);
             $atBox.css('display', 'block');
 
-            $('#at_user_btn').off('click').on('click', function (eve) {
-                eve.stopPropagation();
+            $(that).off('click').on('click', function (eve) {
+                // eve.stopPropagation();
                 $('#' + id).toggle();
             });
 
