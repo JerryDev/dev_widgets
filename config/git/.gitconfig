@@ -1,18 +1,23 @@
 [core]
-	autocrlf = input
+	autocrlf = false
+    safecrlf = true
 [filter "lfs"]
-	clean = git lfs clean %f
-	smudge = git lfs smudge %f
-	required = true
+    clean = git lfs clean %f
+    smudge = git lfs smudge %f
+    required = true
 [user]
-	name = Jerry
-	email = JerryDev@163.com
+    name = Jerry
+    email = JerryDev@163.com
 [push]
-	defualt = current
+    default = current
 [color]
-	ui = true
+    ui = true
 [alias]
-	unstage = reset HEAD
-	last = log -1
-	logf = log --color --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset' --abbrev-commit
-	log1 = log --pretty=oneline --abbrev-commit --graph --decorat
+    unstage = reset HEAD
+    last = log -1
+    logf = log --color --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset' --abbrev-commit
+    log1 = log --pretty=oneline --abbrev-commit --graph --decorat
+[gui]
+    encoding = utf-8
+[i18n]
+    filesEncoding = utf-8
