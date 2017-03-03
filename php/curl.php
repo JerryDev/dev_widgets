@@ -93,7 +93,7 @@ class Curl
         $method = strtoupper(trim($method));
 
         $cacert = getcwd() .'/cacert.pem'; // CA根证书
-        if (! file_exists($cacert)) {
+        if (! file_exists($cacert) || ! is_readable($cacert)) {
             $ca = false;
         }
 
