@@ -120,6 +120,7 @@ class Curl
 
         if ($method == 'POST') {
             curl_setopt($ch, CURLOPT_POST, true);       // 发送一个常规的Post请求
+            $header['Content-type'] = 'application/x-www-form-urlencoded';
         } elseif ($method != 'GET') {
             curl_setopt($ch, CURLOPT_CUSTOMREQUEST, $method);
         }
@@ -129,7 +130,11 @@ class Curl
         }
 
         if (! empty($header)) {
-            curl_setopt($ch, CURLOPT_HTTPHEADER, $header); // 设置HTTP头字段的数组
+            $headArr = [];
+            foreach ($header as $key => $value) {
+                $headArr[] = $key .': '. $value;
+            }
+            curl_setopt($ch, CURLOPT_HTTPHEADER, $headArr); // 设置HTTP头字段的数组
         }
 
         $content = curl_exec($ch);
