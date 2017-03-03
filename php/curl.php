@@ -147,8 +147,8 @@ class Curl
 
         // 捕获HTTP异常
         $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
-        if ($httpCode != 0 && $httpCode != '200') {
-            throw new \UnexpectedValueException('ServiceException', $httpCode);
+        if ($httpCode != '200') {
+            throw new \UnexpectedValueException($content, 500);
         }
 
         curl_close($ch); // 关闭CURL会话
