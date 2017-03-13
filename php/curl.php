@@ -126,7 +126,7 @@ class Curl
         }
 
         if ($method != 'GET' && ! empty($data)) {
-            curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query($data));
+            curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query($data, '', '&'));
         }
 
         if (! empty($header)) {
