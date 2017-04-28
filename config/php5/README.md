@@ -30,16 +30,11 @@
   extension=php_gd2.dll
   extension=php_gmp.dll
   extension=php_mbstring.dll
-  ;extension=php_mysql.dll
   extension=php_mysqli.dll
   extension=php_openssl.dll
   extension=php_pdo_mysql.dll
-  ;extension=php_pdo_pgsql.dll
-  ;extension=php_pdo_sqlite.dll
-  ;extension=php_pgsql.dll
-  ;extension=php_soap.dll
+  extension=php_pdo_pgsql.dll
   extension=php_sockets.dll
-  ;extension=php_sqlite3.dll
   extension=php_xmlrpc.dll
   extension=php_xsl.dll
 
