@@ -18,6 +18,12 @@ class RedirectUtil
 
     const CONTENT_TYPE = 'content-type';
 
+    protected $req_header_keys = [
+        'authorization',
+        'content-type'
+    ];
+
+
     /**
      * @var static
      */
@@ -72,8 +78,8 @@ class RedirectUtil
         }
 
         $query = $request->path();
-        if (! empty($request->getQueryString())) {
-            $query .= '?'. $request->getQueryString();
+        if (!empty($request->getQueryString())) {
+            $query .= '?' . $request->getQueryString();
         }
 
         $fullUrl = rtrim($host, '/') . '/' . ltrim($query, '/');
@@ -104,8 +110,8 @@ class RedirectUtil
     {
         $method = strtoupper(trim($method));
 
-        $cacert = getcwd() .'/cacert.pem'; // CA根证书
-        if (! file_exists($cacert) || ! is_readable($cacert)) {
+        $cacert = getcwd() . '/cacert.pem'; // CA根证书
+        if (!file_exists($cacert) || !is_readable($cacert)) {
             $ca = false;
         }
 
@@ -123,14 +129,15 @@ class RedirectUtil
         }
 
         curl_setopt($ch, CURLOPT_URL, $fullUrl);        // 地址
-        curl_setopt($ch, CURLOPT_HEADER, false);        // 显示返回的Header区域内容
+        curl_setopt($ch, CURLOPT_HEADER, true);        // 显示返回的Header区域内容
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true); // 获取的信息以字符串的形式返回
         curl_setopt($ch, CURLOPT_TIMEOUT, $timeout);    // 设置超时限制防止死循环
 
-        curl_setopt($ch, CURLOPT_USERAGENT, 'youpin-master'); // 模拟用户使用的浏览器
+        curl_setopt($ch, CURLOPT_USERAGENT, 'youpin-gateway'); // 模拟用户使用的浏览器
 
         // 解决POST的参数内容长度超过1024时无法获得response的数据的问题
-        curl_setopt($ch, CURLOPT_HTTPHEADER, ['Expect:']);
+//        curl_setopt($ch, CURLOPT_HTTPHEADER, ['Expect:']);
+        $headers['Expect'] = '';
 
         if ($method == 'POST') {
             curl_setopt($ch, CURLOPT_POST, true);       // 发送一个常规的Post请求
@@ -147,57 +154,47 @@ class RedirectUtil
             $headers[strtolower($k)] = $val;
         }
 
-        if (! empty($headers)) {
+        if (!empty($headers)) {
             $headArr = [];
             foreach ($headers as $key => $value) {
-                $headArr[] = $key .': '. $value;
+                $headArr[] = $key . ': ' . $value;
             }
             curl_setopt($ch, CURLOPT_HTTPHEADER, $headArr); // 设置HTTP头字段的数组
         }
 
         $string = curl_exec($ch);
 
-        /*
-         * 捕获cURL错误
-         */
+        // 捕获cURL错误
         if ($errNo = curl_errno($ch)) {
-            throw new \UnexpectedValueException(curl_strerror($errNo), 500);
-//            throw new UnexpectedValueException(curl_error($ch), 500); // 这个会暴露接口地址
+            throw new \UnexpectedValueException(curl_strerror($errNo), 500); // curl_error() 函数会暴露接口地址
         }
 
-        /*
-         * 捕获HTTP异常
-         */
+        // 捕获HTTP异常
         $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
         if ($httpCode != '200') {
-            throw new \UnexpectedValueException('ServiceException:'. $httpCode, 500);
-        }
-
-        $contentType = curl_getinfo($ch, CURLINFO_CONTENT_TYPE);
-        if (empty($contentType)) {
-            $contentType = 'text/plain';
+            throw new \UnexpectedValueException('ServiceException:' . $httpCode, 500);
         }
 
         curl_close($ch); // 结束cURL会话
 
+        list($header, $body) = explode("\r\n\r\n", $string, 2);
+
+        $res_headers = [];
+        foreach (explode("\r\n", $header) as $ite) {
+            $arr = explode(':', $ite, 2);
+            if (count($arr) > 1) {
+                $arr[0] = strtolower(trim($arr[0]));
+                $arr[1] = trim($arr[1]);
+                if (in_array($arr[0], $this->req_header_keys)) {
+                    $res_headers[$arr[0]] = $arr[1];
+                }
+            }
+        }
+
         return [
-            'headers'=> [
-                static::CONTENT_TYPE => $contentType
-            ],
-            'content'=> $string
+            'headers' => $res_headers,
+            'content' => $body
         ];
-
-        // curl_setopt($ch, CURLOPT_AUTOREFERER, true); // 自动设置Referer
-        // curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true); // 跟踪301自动跳转
-
-        // curl_setopt($ch, CURLOPT_REFERER, 'http://example.com'); // 构造来路
-
-        // curl_setopt($ch, CURLOPT_HTTPHEADER, array( // 设置HTTP头字段的数组
-        //     'Content-type:text/html; charset=utf-8',
-        //     'X-FORWARDED-FOR: 127.0.0.1',
-        //     'CLIENT-IP: 127.0.0.1',
-        // ));
-
     }
 
 }
