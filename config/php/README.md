@@ -48,5 +48,27 @@
 
   session.save_path = "D:/server/tmp"
 
+### 6. xdebug配置
+
+```
+zend_extension=php_xdebug.dll
+
+[xdebug]
+;xdebug.default_enable=1
+xdebug.remote_enable=1
+xdebug.remote_handler=dbgp
+xdebug.remote_host=localhost
+xdebug.remote_port=9999
+xdebug.remote_mode = "req"
+;xdebug.extended_info=1
+;xdebug.remote_autostart=1
+
+xdebug.auto_trace=0
+xdebug.collect_params=0
+xdebug.collect_return=0
+xdebug.trace_output_dir="D:/xdebug/trace"
+xdebug.profiler_enable=0
+xdebug.profiler_output_dir="D:/xdebug/profiler"
+```
 
 
