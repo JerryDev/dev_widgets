@@ -1,0 +1,2 @@
+# force php file always has LF line endings on windows
+*.php text eol=lf
