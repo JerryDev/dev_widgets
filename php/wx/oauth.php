@@ -278,7 +278,7 @@ if (!empty($state)) {
             }
         } catch(PDOException $e) {
             echo 'DB error ', __LINE__, '<br>', PHP_EOL;
-            echo $e->getMessage;
+            echo $e->getMessage();
             exit;
         }
 
