@@ -13,8 +13,10 @@ class StrUtil
 {
 
     const TZ_UTC = 'UTC';
-
+    const TZ_PRC = 'PRC';
     const TZ_SHANGHAI = 'Asia/Shanghai';
+
+    const POOL = 'abcdefhkmnrstwxyz123456789';
 
     /**
      * @var static
@@ -22,9 +24,7 @@ class StrUtil
     protected static $instance;
 
 
-    private function __construct()
-    {
-    }
+    private function __construct(){}
 
     public function __clone()
     {
@@ -58,7 +58,7 @@ class StrUtil
         $string = 'ds_';
         $length = 32;
 
-        $microTime = $this->getBeiJingMicroTime();
+        $microTime = $this->getMicroTime(static::TZ_SHANGHAI);
 
         $date = date('Ymd', $microTime['sec']);
 
@@ -68,12 +68,10 @@ class StrUtil
 
         $string .= $date . '_' . $time . '_' . $usec . '_';
 
-        $pool = 'abcdefghjkmnpqrstwxyz123456789';
-
         while (($len = strlen($string)) < $length) {
             $size = $length - $len;
 
-            $chars = str_shuffle(str_repeat($pool, $size));
+            $chars = str_shuffle(str_repeat(static::POOL, $size));
 
             $string .= substr($chars, 0, $size);
         }
@@ -92,7 +90,7 @@ class StrUtil
     {
         $string = 'ds';
 
-        $microTime = $this->getBeiJingMicroTime();
+        $microTime = $this->getMicroTime(static::TZ_SHANGHAI);
 
         $date = date('Ymd', $microTime['sec']);
 
@@ -102,32 +100,47 @@ class StrUtil
 
         $string .= $date . $time . $usec;
 
-        $pool = 'abcdefghjkmnpqrstwxyz123456789';
-
         while (($len = strlen($string)) < $length) {
             $size = $length - $len;
 
-            $chars = str_shuffle(str_repeat($pool, $size));
-
-            $string .= substr($chars, 0, $size);
+            $string .= $this->random($size);
         }
 
         return trim($string, '_');
     }
 
 
-
-
-
-    public function getBeiJingMicroTime()
+    /**
+     * 获得指定位数的随机数
+     *
+     * @param int $size
+     * @return string
+     */
+    public function random($size = 6)
     {
-        return $this->getMicroTime(static::TZ_SHANGHAI);
+        $chars = str_shuffle(str_repeat(static::POOL, $size));
+
+        return substr($chars, 0, $size);
     }
 
-    public function getUTCMicroTime()
+
+    /**
+     * 有时序的随机数经sha1散列后返回的字符串
+     *
+     * @return string
+     */
+    public function sha1TimeOrderRandomString()
     {
-        return $this->getMicroTime(static::TZ_UTC);
+        $seed = 6; // 种子数
+
+        list($uSec, $sec) = explode(' ', microtime());
+
+        $chars = str_shuffle(str_repeat(static::POOL, $seed));
+
+        return sha1($sec . $uSec . substr($chars, 0, $seed));
     }
+
+
 
     /**
      * 获得指定时区的时间戳和微秒
